@@ -16,7 +16,7 @@ library(tidytext)
 library(ggplot2)
 library(tidyr)
 library(stringr)
-source("scripts/task1_gcd.R")
+source("scripts/gcd.R")
 
 # A. Reading data
 news <-  readLines("data/en_US/en_US.news.txt")
@@ -130,6 +130,109 @@ grep("\\biii\\b", news, value = T)
 # Filter profanity and clean up and re-run analysis
 
 # D. n-gram
+
+# Using full data looks too big for R. Trying to use a subset of the data for n-gram analaysis and modelling.
+test_tidy_twitter <- twitter_df %>% unnest_tokens(word, text) # 30093369 obs
+test_tidy_news <- news_df %>% unnest_tokens(word, text)       # 34762395 obs
+test_tidy_blogs <- blogs_df %>% unnest_tokens(word, text)     # 37546246 obs
+test_tidy_twitter_size <- object.size(test_tidy_twitter) # 3.81e08
+test_tidy_news_size <- object.size(test_tidy_news)       # 4.32e08
+test_tidy_blogs_size <- object.size(test_tidy_blogs)     # 4.67e08
+# Looks like twitter is the smalletst dataset in tidy format. Lets experiment with that.
+tidy_twitter_bigrams <- twitter_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2) # 27733684 obs
+tidy_twitter_bigrams_size <- object.size(tidy_twitter_bigrams) # 6.39e08
+# Perhaps try subset instead, this is taking too long....
+sample_text("data/en_US/en_US.news.txt", "sample_news.txt")
+sample_text("data/en_US/en_US.twitter.txt", "sample_twitter.txt")
+sample_text("data/en_US/en_US.blogs.txt", "sample_blogs.txt")
+# A. Reading data subset
+sub_news <-  readLines("sample_news.txt")
+sub_twitter <- readLines("sample_twitter.txt") # vector of lines
+sub_blogs <- readLines("sample_blogs.txt")
+sub_news_df <- data_frame(line = 1:length(sub_news), text=sub_news)
+sub_twitter_df <- data_frame(line = 1:length(sub_twitter), text=sub_twitter)
+sub_blogs_df <- data_frame(line = 1:length(sub_blogs), text=sub_blogs)
+# Bi-gram
+tidy_sub_news_bigrams <- sub_news_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2) 
+tidy_sub_twitter_bigrams <- sub_twitter_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2) # 2778083
+tidy_sub_blogs_bigrams <- sub_blogs_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2)
+# Tri-gram
+tidy_sub_news_trigrams <- sub_news_df %>% unnest_tokens(trigram, text, token = "ngrams", n=3) 
+tidy_sub_twitter_trigrams <- sub_twitter_df %>% unnest_tokens(trigram, text, token = "ngrams", n=3)
+tidy_sub_blogs_trigrams <- sub_blogs_df %>% unnest_tokens(trigram, text, token = "ngrams", n=3)
+# a bit of comparison
+sorted_tidy_twitter_bigrams <- tidy_twitter_bigrams %>% count(bigram, sort = TRUE)
+# # A tibble: 5,312,867 x 2
+# bigram         n
+# <chr>      <int>
+#   1 in the     78250
+# 2 for the    73921
+# 3 of the     56923
+# 4 on the     48432
+# 5 to be      47094
+# 6 to the     43385
+# 7 thanks for 42995
+# 8 at the     37162
+# 9 i love     35918
+# 10 going to   34273
+sorted_tidy_sub_twitter_bigrams <- tidy_sub_twitter_bigrams %>% count(bigram, sort = TRUE)
+# # A tibble: 948,059 x 2
+# bigram         n
+# <chr>      <int>
+#   1 in the      7787
+# 2 for the     7413
+# 3 of the      5623
+# 4 on the      4950
+# 5 to be       4637
+# 6 thanks for  4349
+# 7 to the      4230
+# 8 at the      3831
+# 9 i love      3681
+# 10 going to    3406
+# We have shown that using the subset of twitter text the top 10 bigrams are identical!
+# Now, try tri-gram
+tidy_twitter_trigrams <- twitter_df %>% unnest_tokens(trigram, text, token = "ngrams", n=3) 
+sorted_tidy_twitter_trigrams <- tidy_twitter_trigrams %>% count(trigram, sort = TRUE)
+sorted_tidy_sub_twitter_trigrams <- tidy_sub_twitter_trigrams %>% count(trigram, sort = TRUE)
+sorted_tidy_twitter_trigrams
+# # A tibble: 13,907,982 x 2
+# trigram                n
+# <chr>              <int>
+#   1 NA                 66260
+# 2 thanks for the     23619
+# 3 looking forward to  8832
+# 4 thank you for       8678
+# 5 i love you          8419
+# 6 for the follow      7929
+# 7 going to be         7415
+# 8 can't wait to       7344
+#  9 i want to           7113
+# 10 a lot of            6250
+# # ... with 13,907,972 more rows
+sorted_tidy_sub_twitter_trigrams
+# # A tibble: 1,858,722 x 2
+# trigram                n
+# <chr>              <int>
+#   1 NA                  6594
+# 2 thanks for the      2421
+# 3 i love you           934
+# 4 looking forward to   873
+# 5 thank you for        820
+# 6 for the follow       809
+# 7 going to be          741
+# 8 can't wait to        740
+# 9 i want to            720
+# 10 a lot of             635
+# # ... with 1,858,712 more rows
+# For trigrams, the top 10 ranking is a bit shuffled, regardless the same set.
+# Apparently, I can just use 1/10th of the data and it'd be pretty accurate.
+
+
+
+
+
+
+################################# BELOW FOR FUTURE USE ############################
 tidy_news_bigrams <- news_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2) 
 tidy_twitter_bigrams <- twitter_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2) 
 tidy_blogs_bigrams <- blogs_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2)
