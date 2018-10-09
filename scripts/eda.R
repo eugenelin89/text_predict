@@ -224,14 +224,50 @@ sorted_tidy_sub_twitter_trigrams
 # 9 i want to            720
 # 10 a lot of             635
 # # ... with 1,858,712 more rows
+
 # For trigrams, the top 10 ranking is a bit shuffled, regardless the same set.
 # Apparently, I can just use 1/10th of the data and it'd be pretty accurate.
+# Now, get the rest sorted bi and trigrams
+sorted_tidy_sub_news_bigrams <- tidy_sub_news_bigrams %>% count(bigram, sort = TRUE)
+sorted_tidy_sub_blogs_bigrams <- tidy_sub_blogs_bigrams %>% count(bigram, sort = TRUE)
+sorted_tidy_sub_news_trigrams <- tidy_sub_news_trigrams %>% count(trigram, sort = TRUE)
+sorted_tidy_sub_blogs_trigrams <- tidy_sub_blogs_trigrams %>% count(trigram, sort = TRUE)
+# Now, this is what we have so far:
+# Bigrams: 
+# sorted_tidy_sub_news_bigrams
+# sorted_tidy_sub_blogs_bigrams
+# sorted_tidy_sub_twitter_bigrams
+# Trigrams:
+# sorted_tidy_sub_news_trigrams
+# sorted_tidy_sub_blogs_trigrams
+# sorted_tidy_sub_twitter_trigrams
+
+# Seperating the words
+sub_news_bigrams_separated <- tidy_sub_news_bigrams %>% separate(bigram, c("word1","word2"), sep = " ")
+sub_blogs_bigrams_separated <- tidy_sub_blogs_bigrams %>% separate(bigram, c("word1","word2"), sep = " ")
+sub_twitter_bigrams_separated <- tidy_sub_twitter_bigrams %>% separate(bigram, c("word1","word2"), sep = " ")
+sub_news_trigrams_separated <- tidy_sub_news_trigrams %>% separate(trigram, c("word1","word2","word3"), sep = " ")
+sub_blogs_trigrams_separated <- tidy_sub_blogs_trigrams %>% separate(trigram, c("word1","word2","word3"), sep = " ")
+sub_twitter_trigrams_separated <- tidy_sub_twitter_trigrams %>% separate(trigram, c("word1","word2","word3"), sep = " ")
+# Sort 
+sub_news_bigrams_counts <- sub_news_bigrams_separated %>% count(word1, word2, sort = TRUE)
+sub_blogs_bigrams_counts <- sub_blogs_bigrams_separated %>% count(word1, word2, sort = TRUE)
+sub_twitter_bigrams_counts <- sub_twitter_bigrams_separated %>% count(word1, word2, sort = TRUE)
+sub_news_trigrams_counts <- sub_news_trigrams_separated %>% count(word1, word2, word3, sort = TRUE)
+sub_blogs_trigrams_counts <- sub_blogs_trigrams_separated %>% count(word1, word2, word3, sort = TRUE)
+sub_twitter_trigrams_counts <- sub_twitter_trigrams_separated %>% count(word1, word2, word3, sort = TRUE)
+# Combine
+total_sub_bigram_counts <- bind_rows(sub_news_bigrams_separated, sub_twitter_bigrams_separated, sub_blogs_bigrams_separated) %>% count(word1, word2, sort = TRUE)
+total_sub_trigram_counts <- bind_rows(sub_news_trigrams_separated, sub_twitter_trigrams_separated, sub_blogs_trigrams_separated) %>% count(word1, word2, word3, sort = TRUE)
+# Try putting the documents togher first and if we get same result
+combined_sub <- bind_rows(sub_news_df, sub_blogs_df, sub_twitter_df)
+combined_sub_bigrams_count <- combined_sub %>% unnest_tokens(bigram, text, token = "ngrams", n=2) %>% separate(bigram, c("word1","word2"), sep = " ") %>% count(word1, word2, sort = TRUE)
+combined_sub_trigrams_count <- combined_sub %>% unnest_tokens(trigram, text, token = "ngrams", n=3) %>% separate(trigram, c("word1","word2","word3"), sep = " ") %>% count(word1, word2, word3, sort = TRUE)
+# Top 10s are all identical. Though, combine first yeids result with more rows.
 
 
 
-
-
-
+###################################################################################
 ################################# BELOW FOR FUTURE USE ############################
 tidy_news_bigrams <- news_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2) 
 tidy_twitter_bigrams <- twitter_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2) 
