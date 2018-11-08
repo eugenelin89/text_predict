@@ -132,19 +132,19 @@ grep("\\biii\\b", news, value = T)
 # D. n-gram
 
 # Using full data looks too big for R. Trying to use a subset of the data for n-gram analaysis and modelling.
-test_tidy_twitter <- twitter_df %>% unnest_tokens(word, text) # 30093369 obs
-test_tidy_news <- news_df %>% unnest_tokens(word, text)       # 34762395 obs
-test_tidy_blogs <- blogs_df %>% unnest_tokens(word, text)     # 37546246 obs
-test_tidy_twitter_size <- object.size(test_tidy_twitter) # 3.81e08
-test_tidy_news_size <- object.size(test_tidy_news)       # 4.32e08
-test_tidy_blogs_size <- object.size(test_tidy_blogs)     # 4.67e08
-# Looks like twitter is the smalletst dataset in tidy format. Lets experiment with that.
-tidy_twitter_bigrams <- twitter_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2) # 27733684 obs
-tidy_twitter_bigrams_size <- object.size(tidy_twitter_bigrams) # 6.39e08
-# Perhaps try subset instead, this is taking too long....
-sample_text("data/en_US/en_US.news.txt", "sample_news.txt")
-sample_text("data/en_US/en_US.twitter.txt", "sample_twitter.txt")
-sample_text("data/en_US/en_US.blogs.txt", "sample_blogs.txt")
+# test_tidy_twitter <- twitter_df %>% unnest_tokens(word, text) # 30093369 obs
+# test_tidy_news <- news_df %>% unnest_tokens(word, text)       # 34762395 obs
+# test_tidy_blogs <- blogs_df %>% unnest_tokens(word, text)     # 37546246 obs
+# test_tidy_twitter_size <- object.size(test_tidy_twitter) # 3.81e08
+# test_tidy_news_size <- object.size(test_tidy_news)       # 4.32e08
+# test_tidy_blogs_size <- object.size(test_tidy_blogs)     # 4.67e08
+# # Looks like twitter is the smalletst dataset in tidy format. Lets experiment with that.
+# tidy_twitter_bigrams <- twitter_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2) # 27733684 obs
+# tidy_twitter_bigrams_size <- object.size(tidy_twitter_bigrams) # 6.39e08
+# # Perhaps try subset instead, this is taking too long....
+# sample_text("data/en_US/en_US.news.txt", "sample_news.txt")
+# sample_text("data/en_US/en_US.twitter.txt", "sample_twitter.txt")
+# sample_text("data/en_US/en_US.blogs.txt", "sample_blogs.txt")
 # A. Reading data subset
 sub_news <-  readLines("sample_news.txt")
 sub_twitter <- readLines("sample_twitter.txt") # vector of lines
@@ -161,40 +161,40 @@ tidy_sub_news_trigrams <- sub_news_df %>% unnest_tokens(trigram, text, token = "
 tidy_sub_twitter_trigrams <- sub_twitter_df %>% unnest_tokens(trigram, text, token = "ngrams", n=3)
 tidy_sub_blogs_trigrams <- sub_blogs_df %>% unnest_tokens(trigram, text, token = "ngrams", n=3)
 # a bit of comparison
-sorted_tidy_twitter_bigrams <- tidy_twitter_bigrams %>% count(bigram, sort = TRUE)
-# # A tibble: 5,312,867 x 2
-# bigram         n
-# <chr>      <int>
-#   1 in the     78250
-# 2 for the    73921
-# 3 of the     56923
-# 4 on the     48432
-# 5 to be      47094
-# 6 to the     43385
-# 7 thanks for 42995
-# 8 at the     37162
-# 9 i love     35918
-# 10 going to   34273
+# sorted_tidy_twitter_bigrams <- tidy_twitter_bigrams %>% count(bigram, sort = TRUE)
+# # # A tibble: 5,312,867 x 2
+# # bigram         n
+# # <chr>      <int>
+# #   1 in the     78250
+# # 2 for the    73921
+# # 3 of the     56923
+# # 4 on the     48432
+# # 5 to be      47094
+# # 6 to the     43385
+# # 7 thanks for 42995
+# # 8 at the     37162
+# # 9 i love     35918
+# # 10 going to   34273
 sorted_tidy_sub_twitter_bigrams <- tidy_sub_twitter_bigrams %>% count(bigram, sort = TRUE)
-# # A tibble: 948,059 x 2
-# bigram         n
-# <chr>      <int>
-#   1 in the      7787
-# 2 for the     7413
-# 3 of the      5623
-# 4 on the      4950
-# 5 to be       4637
-# 6 thanks for  4349
-# 7 to the      4230
-# 8 at the      3831
-# 9 i love      3681
-# 10 going to    3406
-# We have shown that using the subset of twitter text the top 10 bigrams are identical!
-# Now, try tri-gram
-tidy_twitter_trigrams <- twitter_df %>% unnest_tokens(trigram, text, token = "ngrams", n=3) 
-sorted_tidy_twitter_trigrams <- tidy_twitter_trigrams %>% count(trigram, sort = TRUE)
+# # # A tibble: 948,059 x 2
+# # bigram         n
+# # <chr>      <int>
+# #   1 in the      7787
+# # 2 for the     7413
+# # 3 of the      5623
+# # 4 on the      4950
+# # 5 to be       4637
+# # 6 thanks for  4349
+# # 7 to the      4230
+# # 8 at the      3831
+# # 9 i love      3681
+# # 10 going to    3406
+# # We have shown that using the subset of twitter text the top 10 bigrams are identical!
+# # Now, try tri-gram
+# tidy_twitter_trigrams <- twitter_df %>% unnest_tokens(trigram, text, token = "ngrams", n=3) 
+# sorted_tidy_twitter_trigrams <- tidy_twitter_trigrams %>% count(trigram, sort = TRUE)
 sorted_tidy_sub_twitter_trigrams <- tidy_sub_twitter_trigrams %>% count(trigram, sort = TRUE)
-sorted_tidy_twitter_trigrams
+# sorted_tidy_twitter_trigrams
 # # A tibble: 13,907,982 x 2
 # trigram                n
 # <chr>              <int>
@@ -209,7 +209,7 @@ sorted_tidy_twitter_trigrams
 #  9 i want to           7113
 # 10 a lot of            6250
 # # ... with 13,907,972 more rows
-sorted_tidy_sub_twitter_trigrams
+# sorted_tidy_sub_twitter_trigrams
 # # A tibble: 1,858,722 x 2
 # trigram                n
 # <chr>              <int>
@@ -264,82 +264,6 @@ combined_sub <- bind_rows(sub_news_df, sub_blogs_df, sub_twitter_df)
 combined_sub_bigrams_count <- combined_sub %>% unnest_tokens(bigram, text, token = "ngrams", n=2) %>% separate(bigram, c("word1","word2"), sep = " ") %>% count(word1, word2, sort = TRUE)
 combined_sub_trigrams_count <- combined_sub %>% unnest_tokens(trigram, text, token = "ngrams", n=3) %>% separate(trigram, c("word1","word2","word3"), sep = " ") %>% count(word1, word2, word3, sort = TRUE)
 # Top 10s are all identical. Though, combine first yeids result with more rows.
-
-
-
-###################################################################################
-################################# BELOW FOR FUTURE USE ############################
-tidy_news_bigrams <- news_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2) 
-tidy_twitter_bigrams <- twitter_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2) 
-tidy_blogs_bigrams <- blogs_df %>% unnest_tokens(bigram, text, token = "ngrams", n=2)
-
-# tidy_news_trigrams <- news_df %>% unnest_tokens(trigram, text, token = "ngrams", n=3) 
-# tidy_twitter_trigrams <- twitter_df %>% unnest_tokens(trigram, text, token = "ngrams", n=3) 
-# tidy_blogs_trigrams <- blogs_df %>% unnest_tokens(trigram, text, token = "ngrams", n=3)
-
-tidy_news_bigrams %>% count(bigram, sort = TRUE)
-tidy_twitter_bigrams %>% count(bigram, sort = TRUE)
-tidy_blogs_bigrams %>% count(bigram, sort = TRUE)
-
-# tidy_news_trigrams %>% count(trigram, sort = TRUE)
-# tidy_twitter_trigrams %>% count(trigram, sort = TRUE)
-# tidy_blogs_trigrams %>% count(trigram, sort = TRUE)
-# lots of uninteresting words such as "of the", "for the","in the"...etc. but for text prediction they may be correct.
-
-# Filtering out uninteresting words and see what we get.
-news_bigrams_separated <- tidy_news_bigrams %>%
-  separate(bigram, c("word1","word2"), sep = " ")
-twitter_bigrams_separated <- tidy_twitter_bigrams %>%
-  separate(bigram, c("word1","word2"), sep = " ")
-blogs_bigrams_separated <- tidy_blogs_bigrams %>%
-  separate(bigram, c("word1","word2"), sep = " ")
-
-# news_trigrams_separated <- tidy_news_trigrams %>%
-#   separate(trigram, c("word1","word2","word3"), sep = " ")
-# twitter_trigrams_separated <- tidy_twitter_trigrams %>%
-#   separate(trigram, c("word1","word2","word3"), sep = " ")
-# blogs_trigrams_separated <- tidy_blogs_trigrams %>%
-#   separate(trigram, c("word1","word2","word3"), sep = " ")
-
-# Filter out stop words
-news_bigrams_filtered <- news_bigrams_separated %>% filter(!word1 %in% stop_words$word) %>% filter(!word2 %in% stop_words$word)
-twitter_bigrams_filtered <- twitter_bigrams_separated %>% filter(!word1 %in% stop_words$word) %>% filter(!word2 %in% stop_words$word)
-blogs_bigrams_filtered <- blogs_bigrams_separated %>% filter(!word1 %in% stop_words$word) %>% filter(!word2 %in% stop_words$word)
-
-# news_trigrams_filtered <- news_trigrams_separated %>% filter(!word1 %in% stop_words$word) %>% filter(!word2 %in% stop_words$word) %>% filter(!word3 %in% stop_words$word)
-# twitter_trigrams_filtered <- twitter_trigrams_separated %>% filter(!word1 %in% stop_words$word) %>% filter(!word2 %in% stop_words$word) %>% filter(!word3 %in% stop_words$word)
-# blogs_trigrams_filtered <- blogs_trigrams_separated %>% filter(!word1 %in% stop_words$word) %>% filter(!word2 %in% stop_words$word) %>% filter(!word3 %in% stop_words$word)
-
-# new bigram counts
-news_bigrams_counts <- news_bigrams_filtered %>% count(word1, word2, sort = TRUE)
-twitter_bigrams_counts <- twitter_bigrams_filtered %>% count(word1, word2, sort = TRUE)
-blogs_bigrams_counts <- blogs_bigrams_filtered %>% count(word1, word2, sort = TRUE)
-
-# news_trigrams_counts <- news_trigrams_filtered %>% count(word1, word2, word3, sort = TRUE)
-# twitter_trigrams_counts <- twitter_trigrams_filtered %>% count(word1, word2, word3, sort = TRUE)
-# blogs_trigrams_counts <- blogs_trigrams_filtered %>% count(word1, word2, word3, sort = TRUE)
-
-news_bigrams_counts
-twitter_bigrams_counts
-blogs_bigrams_counts
-# news_trigrams_counts
-# twitter_trigrams_counts
-# blogs_trigrams_counts
-
-total_bigram_counts <- bind_rows(news_bigrams_filtered, twitter_bigrams_filtered, blogs_bigrams_filtered) %>% 
-  count(word1, word2, sort = TRUE)
-# total_trigram_counts <- bind_rows(news_trigrams_filtered, twitter_trigrams_filtered, blogs_trigrams_filtered) %>% 
-#   count(word1, word2, word3, sort = TRUE)
-
-# Try putting the documents togher first and if we get same result
-# combined_bigrams <- bind_rows(news_df, blogs_df, twitter_df) %>% unnest_tokens(bigram, text, token = "ngrams", n=2)
-# combined_bigrams_separated <- combined_bigrams %>%
-#   separate(bigram, c("word1","word2"), sep = " ")
-# combined_bigrams_filtered <- combined_bigrams_separated %>% filter(!word1 %in% stop_words$word) %>% filter(!word2 %in% stop_words$word)
-# 
-# combined_trigrams <- bind_rows(news_df, blogs_df, twitter_df) %>% unnest_tokens(trigram, text, token = "ngrams", n=3)
-# combined_trigrams_separated <- combined_trigrams %>%
-#   separate(trigram, c("word1","word2","word3"), sep = " ")
-# combined_trigrams_filtered <- combined_trigrams_separated %>% filter(!word1 %in% stop_words$word) %>% filter(!word2 %in% stop_words$word) %>% filter(!word3 %in% stop_words$word)
-
-
+# Will use combined_sub_bigrams_count and combined_sub_trigrams_count for model.
+saveRDS(combined_sub_bigrams_count, "bigrams.rds")
+saveRDS(combined_sub_trigrams_count,"trigrams.rds")
