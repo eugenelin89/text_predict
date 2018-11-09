@@ -1,43 +1,47 @@
 library(dplyr)
 library(dict)
 
-# input is ngram dataframe
-learn_from_ngrams <- function(ngram, model = NULL){
+# input is ngram vector
+learn_from_ngrams <- function(ngram){ 
+  
+  model <- list()
   
   
-  model_df <- data.frame(matrix(ncol = 2, nrow = nrow(ngram)))
-  colnames(model_df) <- c("key", "value")
-  n = 0
-  if(!is.null(model)){
-    n = nrow(model) # number of entries
-    model_df <- rbind(model, model_df)
-  }
-  
-  for(i in 1: nrow(ngram)){
+  for(i in 1: length(ngram)){
+  #for(i in 1: 1000){
+    rw <- ngram[i]
+    str_vec <- strsplit(rw ,split=',', fixed=TRUE)[[1]] # e.g. [1] "99"   "at"   "the"  "time" "522"
+    key <- paste(str_vec[2], str_vec[3], sep = " ")  #paste(rw$word1, rw$word2, sep = " ")
+    val <- paste(rep(str_vec[4], strtoi(vec[5])), collapse = " ")  #paste(rep(rw$word3, rw$n), collapse = " ")
+      
+    cur_val <- model[[key]]
+    if(is.null(cur_val)){
+      # new entry
+      model[key] = val
+    }else{
+      model[key] = paste(c(cur_val, val), collapse = " ")
+    }
+    # y <- which(model_df$key==key)
+    # 
+    # if(length(y) == 0){
+    #   # Add new entry
+    #   n = n + 1
+    #   model_df[n,] <- c(key, val)
+    # }else{
+    #   # Update existing entry
+    #   cur_val <- model_df[y,"value"]
+    #   model_df[y,"value"] <- paste(c(cur_val, val), collapse = " ")
+    # }
+    
     if(i%%100 == 0){
       print(i) # for visual inspection
+      #print(rw)
+      #print(key)
+      #print(val)
     }
-    rw <- ngram[i,]
-    if(is.null(rw$word3)){ # 2-gram
-      
-    }else{ # 3-gram
-      key <- paste(rw$word1, rw$word2, sep = " ") 
-      val <- paste(rep(rw$word3, rw$n), collapse = " ")
-      
-      y <- which(model_df$key==key)
-      # model[[key]] <- c(model$get(key,character()), val)
-      if(length(y) == 0){
-        # Add new entry
-        n = n + 1
-        model_df[n,] <- c(key, val)
-      }else{
-        # Update existing entry
-        cur_val <- model_df[y,"value"]
-        model_df[y,"value"] <- paste(c(cur_val, val), collapse = " ")
-      }
-    }
+
   }
-  model_df[complete.cases(model_df),]
+  model
 }
 
 tfunc <- function(foo = NULL){
