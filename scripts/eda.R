@@ -34,10 +34,6 @@ tidy_news <- news_df %>% unnest_tokens(word, text) %>% anti_join(stop_words)
 tidy_twitter <- twitter_df %>% unnest_tokens(word, text) %>% anti_join(stop_words) 
 tidy_blogs <- blogs_df %>% unnest_tokens(word, text)  %>% anti_join(stop_words)  
 
-# Tokenize corpora for the model, for 2 or 3 grams does not generate a result
-big_df <- rbind(news_df, twitter_df, blogs_df)
-tidy_big <- big_df %>% unnest_tokens(word, text)  %>% anti_join(stop_words)
-
 # Take a quick look at our data.
 # Prob a good idea to use regular expression to include only single words.
 tidy_news %>% 
@@ -269,5 +265,12 @@ combined_sub_bigrams_count <- combined_sub %>% unnest_tokens(bigram, text, token
 combined_sub_trigrams_count <- combined_sub %>% unnest_tokens(trigram, text, token = "ngrams", n=3) %>% separate(trigram, c("word1","word2","word3"), sep = " ") %>% count(word1, word2, word3, sort = TRUE)
 # Top 10s are all identical. Though, combine first yeids result with more rows.
 # Will use combined_sub_bigrams_count and combined_sub_trigrams_count for model.
+
+# Tokenize corpora for the model, for 2 or 3 grams does not generate a result
+big_df <- rbind(news_df, twitter_df, blogs_df)
+tidy_big <- big_df %>% unnest_tokens(word, text)  %>% anti_join(stop_words)
+big_count <- tidy_big %>% count(word, sort=TRUE)
+
 saveRDS(combined_sub_bigrams_count, "bigrams.rds")
 saveRDS(combined_sub_trigrams_count,"trigrams.rds")
+saveRDS(big_count, "tokens.rds")
