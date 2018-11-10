@@ -57,9 +57,36 @@ learn_from_bigrams <- function(ngram){
   model
 }
 
+# for random word generation
+learn_from_tokens <- function(tokens, model_size){
+  model <- vector(mode = "character", length = model_size)
+  head = 1
+  for(i in 2 : length(tokens)){
+    rw <- tokens[i]
+    str_vec <- strsplit(rw ,split=',', fixed=TRUE)[[1]]
+  
+    if(length(str_vec) != 3){
+      n <- strtoi(str_vec[length(str_vec)])
+      word <- paste(str_vec[2:(length(str_vec)-1)], collapse = '')
+    }else{
+      n <- strtoi(str_vec[3])
+      word <- str_vec[2]      
+    }
+    vec <- rep(word, n)
+    model[head:(head+n-1)] <- vec
+    head = head+n
+    if(i%%1000 == 0)
+      print(i)
+  }
+
+  model
+}
+
 predict_next_word <- function(){
   
 }
+
+
 
 #bigrams <- readRDS("bigrams.rds")
 #trigrams <- readRDS("trigrams.rds")
@@ -83,3 +110,12 @@ bigrams_sample <- readLines("bigrams_sample.csv")
 bigrams_model <- learn_from_bigrams(bigrams_sample)
 save(bigrams_model, file="bigrams_model.RData") 
 load("bigrams_model.RData")
+
+# random word generator
+tokens <- readRDS("tokens.rds")
+write.csv(tokens, file="tokens.csv", quote=FALSE)
+token_sample <- readLines("tokens.csv")
+random_model <- learn_from_tokens(token_sample, sum(tokens$n))
+save(random_model, file="random_model.RData")
+load("random_model.RData")
+
