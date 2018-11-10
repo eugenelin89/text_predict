@@ -48,4 +48,4 @@ sample_text("trigrams.csv", "trigrams_sample.csv") # Sampling of trigrams CSV (t
 trigrams_sample <- readLines("trigrams_sample.csv") # Read sample into vector
 my_mod <- learn_from_ngrams(trigrams_sample) # from sample vector, learn the model, which is just a List.
 save(my_mod, file="trigrams_model.RData") # save the trigram model to disk
-tri_model <- load("trigrams_model.RData") # load trigram model
+load("trigrams_model.RData") # load trigram model
