@@ -129,6 +129,14 @@ predict_next_word <- function(sentence){
 }
 
 
+generate_sentence <- function(input, n, result){
+  if(n == 0)
+    return(result)
+  else{
+    nxt <- predict_next_word(input)
+    generate_sentence(paste(input, nxt), n-1, paste(input, nxt))
+  }
+}
 
 #bigrams <- readRDS("bigrams.rds")
 #trigrams <- readRDS("trigrams.rds")
