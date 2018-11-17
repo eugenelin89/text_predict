@@ -1,3 +1,8 @@
+*.csv
+rsconnect/
+.git
+.Rproj.user
+.RData
 .DS_Store
 .Rhistory
 .Rproj.user/
