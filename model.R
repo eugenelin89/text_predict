@@ -63,7 +63,7 @@ learn_from_bigrams <- function(ngram){
 learn_from_tokens <- function(tokens, model_size){
   model <- vector(mode = "character", length = model_size)
   head = 1
-  for(i in 2 : length(tokens)){
+  for(i in 2 : model_size){
     rw <- tokens[i]
     str_vec <- strsplit(rw ,split=',', fixed=TRUE)[[1]]
   
@@ -170,8 +170,9 @@ load("bigrams_model.RData")
 # random word generator
 tokens <- readRDS("tokens.rds")
 write.csv(tokens, file="tokens.csv", quote=FALSE)
+sample_text("tokens.csv", "tokens_sample.csv", prob=0.01)
 token_sample <- readLines("tokens.csv")
-random_model <- learn_from_tokens(token_sample, sum(tokens$n))
+random_model <- learn_from_tokens(token_sample, 1000)
 save(random_model, file="random_model.RData")
 load("random_model.RData")
 
